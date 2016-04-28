@@ -78,18 +78,14 @@ func main() {
 	{
 		v := url.Values{}
 		v.Set("user_id", userId)
-		v.Set("count", string(MaxStatuses))
+		v.Set("count", strconv.Itoa(MaxStatuses))
 		timeline, err := api.GetUserTimeline(v)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-	statuses:
 		for _, status := range timeline {
 			for _, url := range status.Entities.Urls {
-				if _, ok := recentUrls[url.Expanded_url]; ok {
-					continue statuses
-				}
 				recentUrls[url.Expanded_url] = struct{}{}
 			}
 		}
