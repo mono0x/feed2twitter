@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/xml"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -51,7 +50,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	var recentUrls map[string]struct{}
+	recentUrls := make(map[string]struct{})
 	{
 		v := url.Values{}
 		v.Set("user_id", userId)
@@ -64,7 +63,6 @@ func main() {
 	statuses:
 		for _, status := range timeline {
 			for _, url := range status.Entities.Urls {
-				fmt.Println(url.Expanded_url)
 				if _, ok := recentUrls[url.Expanded_url]; ok {
 					continue statuses
 				}
