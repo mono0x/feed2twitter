@@ -7,8 +7,10 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"golang.org/x/tools/blog/atom"
 
@@ -18,8 +20,30 @@ import (
 
 const (
 	MaxStatuses = 200
-	MaxEntries  = 50
+	MaxEntries  = 100
 )
+
+type atomEntryArray []*atom.Entry
+
+func (a atomEntryArray) Len() int {
+	return len(a)
+}
+
+func (a atomEntryArray) Less(i, j int) bool {
+	it, err := time.Parse(time.RFC3339, string(a[i].Updated))
+	if err != nil {
+		return false
+	}
+	jt, err := time.Parse(time.RFC3339, string(a[j].Updated))
+	if err != nil {
+		return false
+	}
+	return it.After(jt)
+}
+
+func (a atomEntryArray) Swap(i, j int) {
+	a[i], a[j] = a[j], a[i]
+}
 
 func main() {
 	log.SetFlags(log.Lshortfile)
@@ -87,10 +111,14 @@ func main() {
 		if err := xml.Unmarshal(body, &atom); err != nil {
 			log.Fatal(err)
 		}
+
 	}
 
 	{
-		for i, entry := range atom.Entry {
+		entries := atom.Entry
+		sort.Sort(atomEntryArray(entries))
+	entries:
+		for i, entry := range entries {
 			if i >= MaxEntries {
 				break
 			}
@@ -107,7 +135,16 @@ func main() {
 			text := replacer.Replace(template)
 			_, err := api.PostTweet(text, url.Values{})
 			if err != nil {
-				log.Fatal(err)
+				if apiErr, ok := err.(*anaconda.ApiError); ok {
+					for _, err := range apiErr.Decoded.Errors {
+						if err.Code == anaconda.TwitterErrorStatusIsADuplicate {
+							continue entries
+						}
+					}
+					log.Fatal(apiErr)
+				} else {
+					log.Fatal(err)
+				}
 			}
 		}
 	}
