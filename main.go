@@ -112,11 +112,13 @@ func main() {
 
 	{
 		entries := atomEntryArray(atom.Entry)
-		sort.Sort(entries)
-		slice := entries[0:MaxEntries]
-		sort.Sort(sort.Reverse(atomEntryArray(slice)))
+		sort.Sort(sort.Reverse(entries))
+		n := len(entries) - MaxEntries
+		if n < 0 {
+			n = 0
+		}
 	entries:
-		for _, entry := range slice {
+		for _, entry := range entries[n:] {
 			if len(entry.Link) == 0 {
 				continue
 			}
