@@ -23,13 +23,13 @@ const (
 	MaxEntries  = 100
 )
 
-type atomEntryArray []*atom.Entry
+type atomEntrySlice []*atom.Entry
 
-func (a atomEntryArray) Len() int {
+func (a atomEntrySlice) Len() int {
 	return len(a)
 }
 
-func (a atomEntryArray) Less(i, j int) bool {
+func (a atomEntrySlice) Less(i, j int) bool {
 	it, err := time.Parse(time.RFC3339, string(a[i].Updated))
 	if err != nil {
 		return false
@@ -41,7 +41,7 @@ func (a atomEntryArray) Less(i, j int) bool {
 	return it.After(jt)
 }
 
-func (a atomEntryArray) Swap(i, j int) {
+func (a atomEntrySlice) Swap(i, j int) {
 	a[i], a[j] = a[j], a[i]
 }
 
@@ -111,11 +111,11 @@ func main() {
 	}
 
 	{
-		entries := atomEntryArray(atom.Entry)
+		entries := atomEntrySlice(atom.Entry)
 		sort.Sort(sort.Reverse(entries))
-		n := len(entries) - MaxEntries
-		if n < 0 {
-			n = 0
+		n := 0
+		if len(entries) > MaxEntries {
+			n = len(entries) - MaxEntries
 		}
 	entries:
 		for _, entry := range entries[n:] {
