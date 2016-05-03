@@ -129,8 +129,7 @@ func main() {
 
 			replacer := strings.NewReplacer("{title}", entry.Title, "{url}", link.Href)
 			text := replacer.Replace(template)
-			_, err := api.PostTweet(text, url.Values{})
-			if err != nil {
+			if _, err := api.PostTweet(text, url.Values{}); err != nil {
 				if apiErr, ok := err.(*anaconda.ApiError); ok {
 					for _, err := range apiErr.Decoded.Errors {
 						if err.Code == anaconda.TwitterErrorStatusIsADuplicate {
