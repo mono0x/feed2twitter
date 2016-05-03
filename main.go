@@ -111,6 +111,8 @@ func main() {
 	}
 
 	{
+		t := time.Now().AddDate(0, 0, -1)
+
 		entries := atomEntrySlice(atom.Entry)
 		sort.Sort(sort.Reverse(entries))
 		n := 0
@@ -125,6 +127,16 @@ func main() {
 			link := entry.Link[0]
 			if _, ok := recentUrls[link.Href]; ok {
 				continue
+			}
+
+			if published, err := time.Parse(time.RFC3339, string(entry.Published)); err == nil {
+				if !published.After(t) {
+					continue
+				}
+			} else if updated, err := time.Parse(time.RFC3339, string(entry.Updated)); err == nil {
+				if !updated.After(t) {
+					continue
+				}
 			}
 
 			replacer := strings.NewReplacer("{title}", entry.Title, "{url}", link.Href)
