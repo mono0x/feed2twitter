@@ -48,6 +48,12 @@ func (a atomEntrySlice) Swap(i, j int) {
 func main() {
 	log.SetFlags(log.Lshortfile)
 
+	if transport, ok := http.DefaultTransport.(*http.Transport); ok {
+		transport.TLSHandshakeTimeout = 30 * time.Second
+	} else {
+		log.Fatal("Change TLSHandshakeTimeout failed")
+	}
+
 	if len(os.Args) > 0 {
 		if err := godotenv.Load(os.Args...); err != nil {
 			log.Fatal(err)
