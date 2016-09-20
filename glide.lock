@@ -1,14 +1,14 @@
 hash: 9f5467562779a3e8284aea5211744d6a55aea42acf1d8a2a213252687d45c881
-updated: 2016-05-19T21:18:22.828329276+09:00
+updated: 2016-09-20T14:58:31.427385+09:00
 imports:
 - name: github.com/azr/backoff
   version: 53511d3c733003985b0b76f733df1f4d0095ee6a
 - name: github.com/ChimeraCoder/anaconda
-  version: 91bfbf5de08def2e8b5480b52cae811d2bde3af9
+  version: 00ecb7b4510497dc28cd46a598007ab8fe01f889
 - name: github.com/ChimeraCoder/tokenbucket
   version: c5a927568de7aad8a58127d80bcd36ca4e71e454
 - name: github.com/dustin/go-jsonpointer
-  version: 2efc9fef1d9421a8d252a32e20beb10cecd2bbca
+  version: ba0abeacc3dcca5b9b20f31509c46794edbc9965
 - name: github.com/dustin/gojson
   version: 2e71ec9dd5adce3b168cd0dbde03b5cc04951c30
 - name: github.com/garyburd/go-oauth
@@ -21,4 +21,4 @@ imports:
   version: 9ae4729fba20b3533d829a9c6ba8195b068f2abc
   subpackages:
   - blog/atom
-devImports: []
+testImports: []
